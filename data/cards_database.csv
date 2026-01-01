@@ -2,7 +2,6 @@ Card Name,Series,Base Price,Rarity Score
 Pikachu VMAX,Sword & Shield,50,85
 Charizard GX,Sun & Moon,120,95
 Mewtwo EX,XY,80,75
-Blastoise V,Sword & Shield,45,70
 Venusaur GX,Sun & Moon,60,72
 Lucario VMAX,Sword & Shield,55,78
 Rayquaza VMAX,Sword & Shield,90,88
@@ -19,75 +18,69 @@ Flareon VMAX,Evolving Skies,72,81
 Leafeon VMAX,Evolving Skies,88,86
 Glaceon VMAX,Evolving Skies,82,85
 Snorlax VMAX,Chilling Reign,68,79
-Mimikyu VMAX,Chilling Reign,58,76
-Metagross VMAX,Battle Styles,62,77
-Torterra V,Brilliant Stars,38,63
-Infernape V,Brilliant Stars,42,67
-Empoleon V,Brilliant Stars,40,65
-Tyranitar VMAX,Battle Styles,105,91
-Noivern VMAX,Chilling Reign,78,83
-Corviknight VMAX,Chilling Reign,55,74
-Crobat VMAX,Shining Fates,48,71
 Dragapult VMAX,Rebel Clash,92,89
 Toxtricity VMAX,Rebel Clash,52,73
 Coalossal VMAX,Rebel Clash,44,69
-Zacian V,Crown Zenith,130,96
-Zamazenta V,Crown Zenith,115,93
+Zacian V,Sword & Shield,130,96
+Zamazenta V,Sword & Shield,115,93
 Eternatus VMAX,Darkness Ablaze,100,94
-Pikachu V-Union,Vivid Voltage,85,88
+Pikachu V-Union,Celebrations,85,88
 Charizard VSTAR,Brilliant Stars,140,97
-Blastoise VSTAR,Brilliant Stars,95,90
-Venusaur VSTAR,Brilliant Stars,90,89
-Aerodactyl VSTAR,Brilliant Stars,88,87
-Whimsicott VSTAR,Brilliant Stars,65,81
-Raichu VMAX,Vivid Voltage,60,78
-Ampharos VMAX,Vivid Voltage,58,77
-Machamp VMAX,Vivid Voltage,72,82
-Alakazam VMAX,Vivid Voltage,80,85
-Gyarados VMAX,Vivid Voltage,98,92
-Lapras VMAX,Vivid Voltage,70,80
-Nidoking VMAX,Vivid Voltage,66,79
-Nidoqueen VMAX,Vivid Voltage,64,78
-Arcanine VMAX,Vivid Voltage,74,83
-Poliwrath VMAX,Vivid Voltage,56,75
-Rapidash VMAX,Vivid Voltage,54,74
-Slowbro VMAX,Vivid Voltage,62,77
-Magneton VMAX,Vivid Voltage,50,72
-Gengar VSTAR,Fusion Strike,108,91
-Celebi VSTAR,Fusion Strike,102,90
-Mew VMAX,Fusion Strike,125,95
-Genesect V,Fusion Strike,78,84
-Deoxys VMAX,Fusion Strike,82,86
-Latias VSTAR,Lost Origin,96,91
-Latios VSTAR,Lost Origin,94,90
-Kyogre VMAX,Chilling Reign,112,93
-Groudon VMAX,Chilling Reign,110,92
-Rayquaza VSTAR,Evolving Skies,118,94
+Arceus VSTAR,Brilliant Stars,145,97
 Dialga VSTAR,Astral Radiance,105,91
 Palkia VSTAR,Astral Radiance,103,90
 Giratina VSTAR,Lost Origin,135,96
-Arceus VSTAR,Brilliant Stars,145,97
-Reshiram VMAX,Chilling Reign,98,89
-Zekrom VMAX,Chilling Reign,96,88
+Origin Forme Palkia VSTAR,Astral Radiance,98,89
+Origin Forme Dialga VSTAR,Astral Radiance,100,90
+Mew VMAX,Fusion Strike,125,95
+Genesect V,Fusion Strike,78,84
+Gengar VSTAR,Fusion Strike,108,91
+Mewtwo V-Union,Pokemon GO,120,94
+Lugia VSTAR,Silver Tempest,118,93
+Regidrago VSTAR,Silver Tempest,88,85
 Kyurem VMAX,Chilling Reign,104,90
-Xerneas VSTAR,Crown Zenith,95,88
-Yveltal VSTAR,Crown Zenith,93,87
-Zygarde VMAX,Chilling Reign,90,86
-Solgaleo VMAX,Sun & Moon,88,85
-Lunala VMAX,Sun & Moon,86,84
-Necrozma VMAX,Sun & Moon,92,87
-Tapu Koko VMAX,Sun & Moon,76,82
-Tapu Lele VMAX,Sun & Moon,80,84
-Tapu Bulu VMAX,Sun & Moon,74,81
-Tapu Fini VMAX,Sun & Moon,72,80
-Kartana GX,Sun & Moon,68,79
-Guzzlord GX,Sun & Moon,70,80
-Nihilego GX,Sun & Moon,66,78
+Gyarados VMAX,Darkness Ablaze,98,92
+Machamp VMAX,Astral Radiance,72,82
+Lapras VMAX,Sword & Shield,70,80
+Raichu VMAX,Vivid Voltage,60,78
+Morpeko VMAX,Shining Fates,48,71
+Duraludon VMAX,Evolving Skies,76,83
+Rayquaza VSTAR,Evolving Skies,118,94
+Pikachu VMAX Promo,SWSH Promos,65,80
+Charizard V,Brilliant Stars,85,86
+Mewtwo VSTAR,Pokemon GO,115,92
+Darkrai VSTAR,Astral Radiance,92,87
+Hisuian Zoroark VSTAR,Lost Origin,78,83
+Aerodactyl VSTAR,Lost Origin,88,87
+Serperior VSTAR,Silver Tempest,82,84
+Unown VSTAR,Silver Tempest,68,78
+Regigigas VSTAR,Crown Zenith,90,86
+Meowscarada ex,Scarlet & Violet,95,88
+Skeledirge ex,Scarlet & Violet,88,85
+Quaquaval ex,Scarlet & Violet,85,84
+Miraidon ex,Scarlet & Violet,125,95
+Koraidon ex,Scarlet & Violet,128,96
+Gardevoir ex,Scarlet & Violet,110,91
+Iron Valiant ex,Paldea Evolved,92,87
+Roaring Moon ex,Paldea Evolved,98,89
+Iono,Paldea Evolved,45,92
+Reshiram GX,Sun & Moon,75,82
+Zekrom GX,Sun & Moon,73,81
+Kyurem GX,Sun & Moon,68,79
+Necrozma GX,Sun & Moon,92,87
+Solgaleo GX,Sun & Moon,88,85
+Lunala GX,Sun & Moon,86,84
+Tapu Koko GX,Sun & Moon,76,82
+Tapu Lele GX,Sun & Moon,80,84
+Tapu Bulu GX,Sun & Moon,74,81
+Tapu Fini GX,Sun & Moon,72,80
 Buzzwole GX,Sun & Moon,64,77
 Pheromosa GX,Sun & Moon,62,76
 Xurkitree GX,Sun & Moon,60,75
 Celesteela GX,Sun & Moon,58,74
-Stakataka GX,Sun & Moon,56,73
+Kartana GX,Sun & Moon,68,79
+Guzzlord GX,Sun & Moon,70,80
+Nihilego GX,Sun & Moon,66,78
 Blacephalon GX,Sun & Moon,82,85
 Marshadow GX,Sun & Moon,78,83
 Zeraora GX,Sun & Moon,84,86
@@ -96,6 +89,99 @@ Golisopod GX,Sun & Moon,68,79
 Lycanroc GX,Sun & Moon,74,82
 Turtonator GX,Sun & Moon,66,78
 Vikavolt GX,Sun & Moon,70,80
-Bewear GX,Sun & Moon,64,77
 Kommo-o GX,Sun & Moon,76,83
-Dragonite VMAX,Sword & Shield,108,91
+Dragonite VMAX,Evolving Skies,108,91
+Leafeon VSTAR,Crown Zenith,85,84
+Glaceon VSTAR,Crown Zenith,88,85
+Metagross VMAX,Chilling Reign,62,77
+Empoleon V,Brilliant Stars,40,65
+Infernape V,Brilliant Stars,42,67
+Torterra V,Brilliant Stars,38,63
+Charizard ex,Scarlet & Violet,158,97
+Pikachu ex,Scarlet & Violet,118,93
+Mewtwo ex,Pokemon 151,145,96
+Mew ex,Pokemon 151,135,95
+Alakazam ex,Pokemon 151,95,88
+Gengar ex,Pokemon 151,102,90
+Machamp ex,Pokemon 151,88,86
+Venusaur ex,Pokemon 151,110,91
+Blastoise ex,Pokemon 151,108,90
+Dragonite ex,Pokemon 151,98,89
+Zapdos ex,Pokemon 151,85,85
+Moltres ex,Pokemon 151,88,86
+Articuno ex,Pokemon 151,82,84
+Arcanine ex,Obsidian Flames,76,82
+Tyranitar ex,Paldea Evolved,105,91
+Ting-Lu ex,Paldea Evolved,68,78
+Chien-Pao ex,Paldea Evolved,92,87
+Wo-Chien ex,Paldea Evolved,72,80
+Chi-Yu ex,Paldea Evolved,78,83
+Great Tusk ex,Paradox Rift,88,85
+Iron Treads ex,Paradox Rift,82,84
+Scream Tail ex,Paradox Rift,75,81
+Iron Bundle ex,Paradox Rift,80,83
+Brute Bonnet ex,Paradox Rift,70,79
+Iron Hands ex,Paradox Rift,95,88
+Slither Wing ex,Paradox Rift,72,80
+Iron Jugulis ex,Paradox Rift,78,82
+Flutter Mane ex,Paradox Rift,98,89
+Iron Thorns ex,Paradox Rift,85,85
+Sandy Shocks ex,Paradox Rift,68,78
+Iron Moth ex,Paradox Rift,90,86
+Raging Bolt ex,Temporal Forces,105,90
+Iron Crown ex,Temporal Forces,98,88
+Gouging Fire ex,Temporal Forces,102,89
+Walking Wake ex,Temporal Forces,95,87
+Iron Leaves ex,Temporal Forces,88,85
+Terapagos ex,Surging Sparks,125,94
+Latias ex,Stellar Crown,92,86
+Latios ex,Stellar Crown,90,85
+Alolan Exeggutor VMAX,Fusion Strike,58,75
+Toxtricity VSTAR,Lost Origin,82,83
+Lucario VSTAR,Astral Radiance,95,87
+Gallade VSTAR,Astral Radiance,88,85
+Hisuian Samurott VSTAR,Astral Radiance,85,84
+Hisuian Typhlosion VSTAR,Astral Radiance,82,83
+Hisuian Decidueye VSTAR,Astral Radiance,80,82
+Magnezone VSTAR,Lost Origin,78,81
+Kyurem VSTAR,Lost Origin,92,86
+Pidgeot ex,Obsidian Flames,108,90
+Revavroom ex,Obsidian Flames,72,79
+Maushold ex,Obsidian Flames,68,77
+Wiglett ex,Obsidian Flames,55,73
+Eiscue ex,Obsidian Flames,62,76
+Dondozo ex,Obsidian Flames,75,80
+Tatsugiri ex,Obsidian Flames,70,78
+Palafin ex,Obsidian Flames,85,84
+Iron Valiant ex,Paradox Rift,88,85
+Espathra ex,Paldea Evolved,78,81
+Forretress ex,Paldea Evolved,65,77
+Garchomp ex,Surging Sparks,112,91
+Lucario ex,Surging Sparks,98,88
+Salamence ex,Shrouded Fable,105,90
+Dragapult ex,Shrouded Fable,98,88
+Hydreigon ex,Shrouded Fable,95,87
+Goodra ex,Shrouded Fable,88,85
+Fezandipiti ex,Shrouded Fable,75,80
+Munkidori ex,Shrouded Fable,72,79
+Okidogi ex,Shrouded Fable,78,81
+Cyclizar ex,Stellar Crown,82,83
+Ceruledge ex,Temporal Forces,92,86
+Armarouge ex,Temporal Forces,90,85
+Tinkaton ex,Stellar Crown,85,84
+Glimmora ex,Stellar Crown,78,81
+Klawf ex,Stellar Crown,70,78
+Orthworm ex,Stellar Crown,68,77
+Bombirdier ex,Stellar Crown,65,76
+Kingambit ex,Twilight Masquerade,108,90
+Ogerpon ex,Twilight Masquerade,95,87
+Blood Moon Ursaluna ex,Twilight Masquerade,102,89
+Sinistcha ex,Twilight Masquerade,88,85
+Thwackey ex,Twilight Masquerade,58,74
+Dipplin ex,Twilight Masquerade,72,79
+Rosa,Cosmic Eclipse,203,99
+Lillie,Ultra Prism,185,98
+Marnie,Sword & Shield,165,97
+Boss's Orders,Rebel Clash,45,88
+Professor's Research,Sword & Shield,35,85
+Iono,Paldea Evolved,45,92

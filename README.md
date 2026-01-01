@@ -4,7 +4,7 @@ A web application built with Python, Streamlit, and OpenCV that detects Pokemon 
 
 ## Features
 
-- **Card Detection**: Uses OpenCV ORB (Oriented FAST and Rotated BRIEF) feature matching to identify Pokemon cards
+- **Card Detection**: Uses OCR (Optical Character Recognition) to extract text from card images and match against the database
 - **Fuzzy Logic Price Estimation**: Calculates estimated prices based on:
   - Rarity Score (1-100 from database)
   - Card Condition (Damaged, Played, Mint)
@@ -33,20 +33,22 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 python -m pip install --upgrade pip
 ```
 
-### 4. Install Dependencies
+### 4. Install Tesseract OCR
+Download and install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+
+Or use Chocolatey:
+```powershell
+choco install tesseract
+```
+
+### 5. Install Dependencies
 ```powershell
 pip install -r requirements.txt
 ```
 
 ## Usage
 
-### 1. Add Reference Images
-
-Before running the app, add reference Pokemon card images to `data/reference_images/`:
-- Name files to match card names in the database (e.g., `Pikachu VMAX.jpg`)
-- Use high-quality images for best detection results
-
-### 2. Run the Application
+### 1. Run the Application
 ```powershell
 streamlit run app.py
 ```
@@ -66,8 +68,7 @@ test-ai-enginge-dinda/
 ├── requirements.txt          # Python dependencies
 ├── data/
 │   ├── cards_database.csv   # Card database (Name, Series, Base Price, Rarity)
-│   ├── README.md            # Setup instructions for reference images
-│   └── reference_images/    # Place reference card images here
+│   └── README.md            # Data directory information
 ├── SETUP_COMMANDS.md        # Detailed setup commands
 └── README.md                # This file
 ```
@@ -76,19 +77,20 @@ test-ai-enginge-dinda/
 
 - **Python 3.x**: Core programming language
 - **Streamlit**: Web application framework
-- **OpenCV**: Image processing and ORB feature matching
+- **OpenCV**: Image preprocessing for OCR
+- **Pytesseract**: OCR (Optical Character Recognition) for text extraction
 - **scikit-fuzzy**: Fuzzy logic implementation for price calculation
 - **Pandas**: Database management
 - **Pillow (PIL)**: Image handling
 
 ## How It Works
 
-### Card Detection (ORB)
-1. Uploaded image is converted to grayscale
-2. ORB detector finds keypoints and descriptors
-3. Features are matched with reference images using brute-force matcher
-4. Lowe's ratio test filters good matches
-5. Card with highest match score (>10 matches) is selected
+### Card Detection (OCR)
+1. Uploaded image is preprocessed (grayscale, resize, threshold)
+2. OCR extracts text from the card image
+3. Extracted text is searched against card names in the database
+4. Best matching card is selected based on word overlap
+5. Card information is retrieved for price estimation
 
 ### Price Estimation (Fuzzy Logic)
 1. Inputs: Rarity Score (0-100) and Condition (Damaged/Played/Mint)
@@ -108,10 +110,10 @@ The `cards_database.csv` contains:
 ## Troubleshooting
 
 ### Card Not Recognized
-- Ensure reference images are in `data/reference_images/`
-- Check that image file names match database card names
-- Use clear, high-quality images
-- Ensure the uploaded card image is well-lit and fully visible
+- Ensure the card text is clearly visible in the uploaded image
+- Use high-quality, well-lit images
+- Make sure the card name is readable and not obscured
+- Check that the card exists in the CSV database
 
 ### Execution Policy Error
 If PowerShell blocks activation:

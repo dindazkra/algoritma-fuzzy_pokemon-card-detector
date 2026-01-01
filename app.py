@@ -6,6 +6,27 @@ from PIL import Image
 import os
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
+import pytesseract
+
+# Configure Tesseract path (adjust if installed in different location)
+# Common installation paths for Tesseract on Windows
+possible_paths = [
+    r'C:\Program Files\Tesseract-OCR\tesseract.exe',
+    r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe',
+    r'C:\Users\{}\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'.format(os.getenv('USERNAME')),
+]
+
+# Try to find Tesseract executable
+tesseract_path = None
+for path in possible_paths:
+    if os.path.exists(path):
+        tesseract_path = path
+        break
+
+if tesseract_path:
+    pytesseract.pytesseract.tesseract_cmd = tesseract_path
+else:
+    print("Warning: Tesseract executable not found in common locations. Please ensure Tesseract is installed and update the path in app.py")
 
 # Page configuration
 st.set_page_config(
@@ -98,87 +119,20 @@ def load_card_database():
 if st.session_state.cards_db is None:
     st.session_state.cards_db = load_card_database()
 
-def detect_card_orb(uploaded_image, reference_images_dir='data/reference_images'):
-    """
-    Detect Pokemon card using ORB feature matching
-    
-    Args:
-        uploaded_image: PIL Image or numpy array
-        reference_images_dir: Directory containing reference card images
-    
-    Returns:
-        matched_card_name: Name of matched card or None
-        match_score: Confidence score
-    """
-    # Convert uploaded image to OpenCV format
-    if isinstance(uploaded_image, Image.Image):
-        img1 = cv2.cvtColor(np.array(uploaded_image), cv2.COLOR_RGB2BGR)
+def get_rarity_type(rarity_score):
+    """Convert rarity score to rarity type string"""
+    if rarity_score <= 20:
+        return "Common"
+    elif rarity_score <= 40:
+        return "Uncommon"
+    elif rarity_score <= 60:
+        return "Rare"
+    elif rarity_score <= 80:
+        return "Ultra Rare"
     else:
-        img1 = uploaded_image.copy()
-    
-    # Convert to grayscale
-    gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-    
-    # Initialize ORB detector
-    orb = cv2.ORB_create(nfeatures=1000)
-    
-    # Find keypoints and descriptors for uploaded image
-    kp1, des1 = orb.detectAndCompute(gray1, None)
-    
-    if des1 is None:
-        return None, 0
-    
-    best_match = None
-    best_match_score = 0
-    best_matches_count = 0
-    
-    # Check if reference images directory exists
-    if not os.path.exists(reference_images_dir):
-        os.makedirs(reference_images_dir, exist_ok=True)
-        st.warning(f"Reference images directory created at {reference_images_dir}. Please add reference card images there.")
-        return None, 0
-    
-    # Iterate through reference images
-    for filename in os.listdir(reference_images_dir):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-            ref_path = os.path.join(reference_images_dir, filename)
-            img2 = cv2.imread(ref_path)
-            
-            if img2 is None:
-                continue
-            
-            gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-            kp2, des2 = orb.detectAndCompute(gray2, None)
-            
-            if des2 is None:
-                continue
-            
-            # Match features using Brute Force Matcher
-            bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
-            matches = bf.knnMatch(des1, des2, k=2)
-            
-            # Apply Lowe's ratio test
-            good_matches = []
-            for match_pair in matches:
-                if len(match_pair) == 2:
-                    m, n = match_pair
-                    if m.distance < 0.75 * n.distance:
-                        good_matches.append(m)
-            
-            # Calculate match score (number of good matches)
-            match_score = len(good_matches)
-            
-            if match_score > best_match_score:
-                best_match_score = match_score
-                best_matches_count = match_score
-                # Extract card name from filename (remove extension)
-                best_match = os.path.splitext(filename)[0]
-    
-    # If we have a reasonable number of matches, consider it a match
-    if best_match_score > 10:  # Threshold for considering it a match
-        return best_match, best_match_score
-    else:
-        return None, best_match_score
+        return "Hyper Rare"
+
+
 
 def fuzzy_price_calculator(rarity_score, condition):
     """
@@ -246,6 +200,45 @@ def fuzzy_price_calculator(rarity_score, condition):
     
     return multiplier
 
+def extract_text_from_image(image):
+    """
+    Extract text from uploaded card image using OCR
+
+    Args:
+        image: PIL Image object
+
+    Returns:
+        extracted_text: String containing extracted text
+    """
+    try:
+        # Convert PIL to OpenCV format
+        img = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+
+        # Preprocess for better OCR
+        # Convert to grayscale
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # Resize if too small (assume minimum 300px width for OCR)
+        height, width = gray.shape
+        if width < 300:
+            scale = 300 / width
+            new_width = int(width * scale)
+            new_height = int(height * scale)
+            gray = cv2.resize(gray, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+
+        # Apply threshold to get binary image
+        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+        # Extract text using pytesseract
+        # Configure for better recognition of card text
+        custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 '
+        extracted_text = pytesseract.image_to_string(thresh, config=custom_config, lang='eng')
+
+        return extracted_text.strip()
+    except Exception as e:
+        st.error(f"OCR Error: {str(e)}. Please ensure Tesseract is installed.")
+        return ""
+
 def main():
     st.markdown('<h1 class="main-header">🃏 Pokemon Card Detector</h1>', unsafe_allow_html=True)
     
@@ -274,53 +267,58 @@ def main():
         
         # Detect button
         if st.button("🔍 Detect Card", type="primary", use_container_width=True):
-            with st.spinner("Detecting card using ORB feature matching..."):
-                # Detect card
-                matched_card, match_score = detect_card_orb(image)
-                
-                if matched_card is not None:
-                    # Find card in database
-                    # Try to match by name (remove any special characters from filename)
-                    card_name_clean = matched_card.replace('_', ' ').replace('-', ' ')
-                    
-                    # Search in database (case-insensitive partial match)
-                    matched_rows = st.session_state.cards_db[
-                        st.session_state.cards_db['Card Name'].str.contains(
-                            card_name_clean, case=False, na=False, regex=False
-                        )
-                    ]
-                    
-                    if len(matched_rows) > 0:
-                        card_data = matched_rows.iloc[0]
-                        
-                        # Get card information
-                        card_name = card_data['Card Name']
-                        series = card_data['Series']
-                        base_price = card_data['Base Price']
-                        rarity_score = card_data['Rarity Score']
-                        
+            with st.spinner("Extracting text from card image..."):
+                # Extract text from image
+                extracted_text = extract_text_from_image(image)
+
+                if extracted_text:
+                    st.info(f"Extracted text: {extracted_text}")
+
+                    # Search for matching card in database
+                    matched_card = None
+                    best_match_score = 0
+
+                    for _, card in st.session_state.cards_db.iterrows():
+                        card_name = card['Card Name'].lower()
+                        text_lower = extracted_text.lower()
+
+                        # Check if card name words are in extracted text
+                        card_words = card_name.split()
+                        match_score = sum(1 for word in card_words if word in text_lower)
+
+                        if match_score > best_match_score and match_score >= len(card_words) * 0.5:  # At least 50% of words match
+                            best_match_score = match_score
+                            matched_card = card
+
+                    if matched_card is not None:
+                        # Get card information directly from matched row
+                        card_name = matched_card['Card Name']
+                        series = matched_card['Series']
+                        base_price = matched_card['Base Price']
+                        rarity_score = matched_card['Rarity Score']
+
                         # Calculate estimated price using fuzzy logic
                         multiplier = fuzzy_price_calculator(rarity_score, condition)
                         estimated_price = base_price * multiplier
-                        
+
                         # Display results
                         st.success("✅ Card Detected!")
-                        
+
                         st.markdown("---")
                         st.markdown("### 📋 Detected Card Information")
-                        
+
                         info_col1, info_col2 = st.columns(2)
-                        
+
                         with info_col1:
                             st.markdown(f"""
                             <div class="card-info">
                                 <strong>Card Name:</strong> {card_name}<br>
                                 <strong>Series:</strong> {series}<br>
                                 <strong>Rarity Score:</strong> {rarity_score}/100<br>
-                                <strong>Match Confidence:</strong> {match_score} features matched
+                                <strong>Text Match Score:</strong> {best_match_score} words matched
                             </div>
                             """, unsafe_allow_html=True)
-                        
+
                         with info_col2:
                             st.markdown(f"""
                             <div class="card-info">
@@ -329,25 +327,23 @@ def main():
                                 <strong>Price Multiplier:</strong> {multiplier:.2f}x<br>
                             </div>
                             """, unsafe_allow_html=True)
-                        
+
                         # Display estimated price prominently
                         st.markdown(f"""
                         <div class="price-display">
                             Estimated Price: ${estimated_price:.2f}
                         </div>
                         """, unsafe_allow_html=True)
-                        
+
                     else:
-                        st.warning("⚠️ Card detected but not found in database.")
-                        st.info(f"Detected card name: {matched_card}\nMatch score: {match_score}")
+                        st.warning("⚠️ No matching card found in database.")
+                        st.info(f"Extracted text: {extracted_text}\nPlease ensure the card text is clearly visible in the image.")
                 else:
-                    st.error("❌ Card Not Recognized")
-                    st.info("No matching card found in the reference images. Please ensure:\n"
+                    st.error("❌ No text extracted from image")
+                    st.info("Unable to read text from the uploaded image. Please ensure:\n"
                            "- The image is clear and well-lit\n"
-                           "- The card is fully visible\n"
-                           "- Reference images exist in the 'data/reference_images' folder")
-                    if match_score > 0:
-                        st.write(f"Best match score: {match_score} features (threshold: 10)")
+                           "- The card text is visible and not obscured\n"
+                           "- The image is not too small or blurry")
 
 if __name__ == "__main__":
     main()
