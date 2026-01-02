@@ -74,46 +74,14 @@ st.markdown("""
 if 'cards_db' not in st.session_state:
     st.session_state.cards_db = None
 
-# Load dummy database
+# Load card database
 def load_card_database():
-    """Load card database from CSV or create default one"""
+    """Load card database from CSV"""
     csv_path = 'data/cards_database.csv'
     if os.path.exists(csv_path):
         return pd.read_csv(csv_path)
     else:
-        # Create dummy database
-        data = {
-            'Card Name': [
-                'Pikachu VMAX',
-                'Charizard GX',
-                'Mewtwo EX',
-                'Blastoise V',
-                'Venusaur GX',
-                'Lucario VMAX',
-                'Rayquaza VMAX',
-                'Garchomp V',
-                'Eevee VMAX',
-                'Gengar VMAX'
-            ],
-            'Series': [
-                'Sword & Shield',
-                'Sun & Moon',
-                'XY',
-                'Sword & Shield',
-                'Sun & Moon',
-                'Sword & Shield',
-                'Sword & Shield',
-                'Brilliant Stars',
-                'Evolving Skies',
-                'Fusion Strike'
-            ],
-            'Base Price': [50, 120, 80, 45, 60, 55, 90, 40, 35, 65],
-            'Rarity Score': [85, 95, 75, 70, 72, 78, 88, 65, 68, 80]
-        }
-        df = pd.DataFrame(data)
-        os.makedirs('data', exist_ok=True)
-        df.to_csv(csv_path, index=False)
-        return df
+        raise FileNotFoundError(f"Card database not found at {csv_path}. Please ensure the database file exists.")
 
 # Initialize database
 if st.session_state.cards_db is None:
@@ -202,13 +170,13 @@ def fuzzy_price_calculator(rarity_score, condition):
 
 def extract_text_from_image(image):
     """
-    Extract text from uploaded card image using OCR
+    Extract text from uploaded card image using OCR, focusing only on the card title
 
     Args:
         image: PIL Image object
 
     Returns:
-        extracted_text: String containing extracted text
+        extracted_text: String containing extracted title text
     """
     try:
         # Convert PIL to OpenCV format
@@ -218,16 +186,24 @@ def extract_text_from_image(image):
         # Convert to grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # Resize if too small (assume minimum 300px width for OCR)
+        # Get image dimensions
         height, width = gray.shape
-        if width < 300:
-            scale = 300 / width
-            new_width = int(width * scale)
-            new_height = int(height * scale)
-            gray = cv2.resize(gray, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+
+        # Crop the top portion of the image where the title typically appears
+        # Pokemon card titles are usually in the upper 25-30% of the card
+        crop_height = int(height * 0.3)  # Take top 30% of the image
+        cropped_gray = gray[:crop_height, :]
+
+        # Resize if too small (assume minimum 300px width for OCR)
+        crop_h, crop_w = cropped_gray.shape
+        if crop_w < 300:
+            scale = 300 / crop_w
+            new_width = int(crop_w * scale)
+            new_height = int(crop_h * scale)
+            cropped_gray = cv2.resize(cropped_gray, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
 
         # Apply threshold to get binary image
-        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        _, thresh = cv2.threshold(cropped_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         # Extract text using pytesseract
         # Configure for better recognition of card text
@@ -296,6 +272,9 @@ def main():
                         series = matched_card['Series']
                         base_price = matched_card['Base Price']
                         rarity_score = matched_card['Rarity Score']
+
+                        # Convert rarity score to type
+                        rarity_type = get_rarity_type(rarity_score)
 
                         # Calculate estimated price using fuzzy logic
                         multiplier = fuzzy_price_calculator(rarity_score, condition)
