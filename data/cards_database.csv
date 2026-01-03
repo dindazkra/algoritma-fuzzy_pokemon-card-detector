@@ -1,15 +1,14 @@
 Card Name,Series,Base Price,Rarity Score
-Pikachu VMAX,Sword & Shield,50,85
-Charizard GX,Sun & Moon,120,95
-Mewtwo EX,XY,80,75
-Venusaur GX,Sun & Moon,60,72
-Lucario VMAX,Sword & Shield,55,78
-Rayquaza VMAX,Sword & Shield,90,88
+Pikachu VMAX,Sword & Shield,20,85
+Charizard GX,Sun & Moon,20,95
+Mewtwo EX,XY,10,53
+Venusaur GX,Sun & Moon,33,72
+Rayquaza VMAX,Sword & Shield,90,70
 Garchomp V,Brilliant Stars,40,65
 Eevee VMAX,Evolving Skies,35,68
-Gengar VMAX,Fusion Strike,65,80
-Charizard VMAX,Champions Path,150,98
-Umbreon VMAX,Evolving Skies,110,92
+Gengar VMAX,Fusion Strike,700,80
+Charizard VMAX,Champions Path,150,72
+Umbreon VMAX,Evolving Skies,1700,92
 Espeon VMAX,Evolving Skies,85,87
 Sylveon VMAX,Evolving Skies,95,90
 Jolteon VMAX,Evolving Skies,70,82
@@ -17,7 +16,7 @@ Vaporeon VMAX,Evolving Skies,75,84
 Flareon VMAX,Evolving Skies,72,81
 Leafeon VMAX,Evolving Skies,88,86
 Glaceon VMAX,Evolving Skies,82,85
-Snorlax VMAX,Chilling Reign,68,79
+Snorlax VMAX,Chilling Reign,30,79
 Dragapult VMAX,Rebel Clash,92,89
 Toxtricity VMAX,Rebel Clash,52,73
 Coalossal VMAX,Rebel Clash,44,69

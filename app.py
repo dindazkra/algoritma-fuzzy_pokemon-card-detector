@@ -100,6 +100,15 @@ def get_rarity_type(rarity_score):
     else:
         return "Hyper Rare"
 
+def get_price_level(estimated_price):
+    """Get price level based on estimated price"""
+    if estimated_price < 50:
+        return "Murah"
+    elif estimated_price <= 100:
+        return "Sedang"
+    else:
+        return "Mahal"
+
 
 
 def fuzzy_price_calculator(rarity_score, condition):
@@ -170,13 +179,13 @@ def fuzzy_price_calculator(rarity_score, condition):
 
 def extract_text_from_image(image):
     """
-    Extract text from uploaded card image using OCR, focusing only on the card title
+    Extract text from uploaded card image using OCR
 
     Args:
         image: PIL Image object
 
     Returns:
-        extracted_text: String containing extracted title text
+        extracted_text: String containing extracted text
     """
     try:
         # Convert PIL to OpenCV format
@@ -186,24 +195,16 @@ def extract_text_from_image(image):
         # Convert to grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # Get image dimensions
-        height, width = gray.shape
-
-        # Crop the top portion of the image where the title typically appears
-        # Pokemon card titles are usually in the upper 25-30% of the card
-        crop_height = int(height * 0.3)  # Take top 30% of the image
-        cropped_gray = gray[:crop_height, :]
-
         # Resize if too small (assume minimum 300px width for OCR)
-        crop_h, crop_w = cropped_gray.shape
-        if crop_w < 300:
-            scale = 300 / crop_w
-            new_width = int(crop_w * scale)
-            new_height = int(crop_h * scale)
-            cropped_gray = cv2.resize(cropped_gray, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+        h, w = gray.shape
+        if w < 300:
+            scale = 300 / w
+            new_width = int(w * scale)
+            new_height = int(h * scale)
+            gray = cv2.resize(gray, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
 
         # Apply threshold to get binary image
-        _, thresh = cv2.threshold(cropped_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         # Extract text using pytesseract
         # Configure for better recognition of card text
@@ -280,6 +281,9 @@ def main():
                         multiplier = fuzzy_price_calculator(rarity_score, condition)
                         estimated_price = base_price * multiplier
 
+                        # Determine price level
+                        price_level = get_price_level(estimated_price)
+
                         # Display results
                         st.success("✅ Card Detected!")
 
@@ -294,6 +298,7 @@ def main():
                                 <strong>Card Name:</strong> {card_name}<br>
                                 <strong>Series:</strong> {series}<br>
                                 <strong>Rarity Score:</strong> {rarity_score}/100<br>
+                                <strong>Rarity:</strong> {rarity_type}<br>
                                 <strong>Text Match Score:</strong> {best_match_score} words matched
                             </div>
                             """, unsafe_allow_html=True)
@@ -304,6 +309,7 @@ def main():
                                 <strong>Base Price:</strong> ${base_price:.2f}<br>
                                 <strong>Condition:</strong> {condition}<br>
                                 <strong>Price Multiplier:</strong> {multiplier:.2f}x<br>
+                                <strong>Tingkat Kemahalan:</strong> {price_level}<br>
                             </div>
                             """, unsafe_allow_html=True)
 
