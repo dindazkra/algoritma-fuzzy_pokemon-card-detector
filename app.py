@@ -8,15 +8,12 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import pytesseract
 
-# Configure Tesseract path (adjust if installed in different location)
-# Common installation paths for Tesseract on Windows
 possible_paths = [
     r'C:\Program Files\Tesseract-OCR\tesseract.exe',
     r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe',
     r'C:\Users\{}\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'.format(os.getenv('USERNAME')),
 ]
 
-# Try to find Tesseract executable
 tesseract_path = None
 for path in possible_paths:
     if os.path.exists(path):
@@ -28,14 +25,12 @@ if tesseract_path:
 else:
     print("Warning: Tesseract executable not found in common locations. Please ensure Tesseract is installed and update the path in app.py")
 
-# Page configuration
 st.set_page_config(
     page_title="Pokemon Card Detector",
     page_icon="🃏",
     layout="wide"
 )
 
-# Custom CSS for better styling
 st.markdown("""
     <style>
     .main-header {
@@ -70,11 +65,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state
 if 'cards_db' not in st.session_state:
     st.session_state.cards_db = None
 
-# Load card database
 def load_card_database():
     """Load card database from CSV"""
     csv_path = 'data/cards_database.csv'
@@ -83,7 +76,6 @@ def load_card_database():
     else:
         raise FileNotFoundError(f"Card database not found at {csv_path}. Please ensure the database file exists.")
 
-# Initialize database
 if st.session_state.cards_db is None:
     st.session_state.cards_db = load_card_database()
 
@@ -111,6 +103,8 @@ def get_price_level(estimated_price):
 
 
 
+
+
 def fuzzy_price_calculator(rarity_score, condition):
     """
     Calculate estimated price using fuzzy logic
@@ -122,18 +116,14 @@ def fuzzy_price_calculator(rarity_score, condition):
     Returns:
         estimated_price: Calculated price
     """
-    # Define fuzzy variables
     rarity = ctrl.Antecedent(np.arange(0, 101, 1), 'rarity')
     card_condition = ctrl.Antecedent(np.arange(0, 101, 1), 'condition')
     price_multiplier = ctrl.Consequent(np.arange(0, 2.1, 0.1), 'multiplier')
     
-    # Define membership functions for rarity
     rarity['low'] = fuzz.trimf(rarity.universe, [0, 0, 50])
     rarity['medium'] = fuzz.trimf(rarity.universe, [30, 60, 90])
     rarity['high'] = fuzz.trimf(rarity.universe, [70, 100, 100])
     
-    # Define membership functions for condition
-    # Map condition strings to numeric values
     condition_map = {'Damaged': 20, 'Played': 50, 'Mint': 90}
     condition_value = condition_map.get(condition, 50)
     
@@ -141,12 +131,10 @@ def fuzzy_price_calculator(rarity_score, condition):
     card_condition['fair'] = fuzz.trimf(card_condition.universe, [30, 50, 70])
     card_condition['excellent'] = fuzz.trimf(card_condition.universe, [60, 100, 100])
     
-    # Define membership functions for price multiplier
     price_multiplier['low'] = fuzz.trimf(price_multiplier.universe, [0, 0, 0.6])
     price_multiplier['medium'] = fuzz.trimf(price_multiplier.universe, [0.4, 0.8, 1.2])
     price_multiplier['high'] = fuzz.trimf(price_multiplier.universe, [1.0, 1.5, 2.0])
     
-    # Define fuzzy rules
     rule1 = ctrl.Rule(rarity['low'] & card_condition['poor'], price_multiplier['low'])
     rule2 = ctrl.Rule(rarity['low'] & card_condition['fair'], price_multiplier['low'])
     rule3 = ctrl.Rule(rarity['low'] & card_condition['excellent'], price_multiplier['medium'])
@@ -157,20 +145,16 @@ def fuzzy_price_calculator(rarity_score, condition):
     rule8 = ctrl.Rule(rarity['high'] & card_condition['fair'], price_multiplier['high'])
     rule9 = ctrl.Rule(rarity['high'] & card_condition['excellent'], price_multiplier['high'])
     
-    # Create control system
     price_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9])
     price_sim = ctrl.ControlSystemSimulation(price_ctrl)
     
-    # Set inputs
     price_sim.input['rarity'] = rarity_score
     price_sim.input['condition'] = condition_value
     
-    # Compute
     try:
         price_sim.compute()
         multiplier = price_sim.output['multiplier']
     except:
-        # Fallback calculation if fuzzy logic fails
         condition_multipliers = {'Damaged': 0.5, 'Played': 0.75, 'Mint': 1.0}
         rarity_multiplier = 0.5 + (rarity_score / 100) * 0.5
         multiplier = condition_multipliers.get(condition, 0.75) * rarity_multiplier
@@ -188,14 +172,10 @@ def extract_text_from_image(image):
         extracted_text: String containing extracted text
     """
     try:
-        # Convert PIL to OpenCV format
         img = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
 
-        # Preprocess for better OCR
-        # Convert to grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # Resize if too small (assume minimum 300px width for OCR)
         h, w = gray.shape
         if w < 300:
             scale = 300 / w
@@ -203,11 +183,8 @@ def extract_text_from_image(image):
             new_height = int(h * scale)
             gray = cv2.resize(gray, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
 
-        # Apply threshold to get binary image
         _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-        # Extract text using pytesseract
-        # Configure for better recognition of card text
         custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 '
         extracted_text = pytesseract.image_to_string(thresh, config=custom_config, lang='eng')
 
@@ -221,7 +198,6 @@ def main():
     
     st.markdown("### Upload a Pokemon Card Image")
     
-    # File uploader
     uploaded_file = st.file_uploader(
         "Choose an image file",
         type=['png', 'jpg', 'jpeg'],
@@ -229,11 +205,9 @@ def main():
     )
     
     if uploaded_file is not None:
-        # Display uploaded image
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Card Image', use_container_width=True)
         
-        # Card condition input
         st.markdown("### Card Condition")
         condition = st.selectbox(
             "Select the condition of the card:",
@@ -242,16 +216,13 @@ def main():
             help="Card condition affects the estimated price"
         )
         
-        # Detect button
         if st.button("🔍 Detect Card", type="primary", use_container_width=True):
             with st.spinner("Extracting text from card image..."):
-                # Extract text from image
                 extracted_text = extract_text_from_image(image)
 
                 if extracted_text:
                     st.info(f"Extracted text: {extracted_text}")
 
-                    # Search for matching card in database
                     matched_card = None
                     best_match_score = 0
 
@@ -259,7 +230,6 @@ def main():
                         card_name = card['Card Name'].lower()
                         text_lower = extracted_text.lower()
 
-                        # Check if card name words are in extracted text
                         card_words = card_name.split()
                         match_score = sum(1 for word in card_words if word in text_lower)
 
@@ -268,23 +238,18 @@ def main():
                             matched_card = card
 
                     if matched_card is not None:
-                        # Get card information directly from matched row
                         card_name = matched_card['Card Name']
                         series = matched_card['Series']
                         base_price = matched_card['Base Price']
                         rarity_score = matched_card['Rarity Score']
 
-                        # Convert rarity score to type
                         rarity_type = get_rarity_type(rarity_score)
 
-                        # Calculate estimated price using fuzzy logic
                         multiplier = fuzzy_price_calculator(rarity_score, condition)
                         estimated_price = base_price * multiplier
 
-                        # Determine price level
                         price_level = get_price_level(estimated_price)
 
-                        # Display results
                         st.success("✅ Card Detected!")
 
                         st.markdown("---")
@@ -313,7 +278,6 @@ def main():
                             </div>
                             """, unsafe_allow_html=True)
 
-                        # Display estimated price prominently
                         st.markdown(f"""
                         <div class="price-display">
                             Estimated Price: ${estimated_price:.2f}
@@ -332,4 +296,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
